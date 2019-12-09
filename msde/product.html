@@ -1,0 +1,1542 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="euc-kr">
+		<meta name="Generator" content="EditPlus®">
+		<meta name="Author" content="">
+		<meta name="Keywords" content="">
+		<meta name="Description" content="">
+		<title>Media Slider Data Editor</title>
+
+		<link href="./msde.css" rel="stylesheet">
+
+		<script id="msde-script-0">
+		//media-slider ver 2.0.2
+
+			if (mediaSlider == null)
+			{
+				var mediaSlider = new Object();
+			}
+
+			mediaSlider.reset = function () {
+
+				if (this.container != null && this.container != "undefined")
+				{
+					this.container.innerHTML = "";
+				}
+
+				if (this.data != null)
+				{
+					this.data = null;
+				}
+			}
+
+			mediaSlider.init = function (json) {
+
+				this.ITEM_TYPE_YOUTUBE = 0;
+				this.ITEM_TYPE_ARTICLE = 1;
+				this.ITEM_TYPE_PRODUCT = 2;
+
+				//디바이스 체크
+				this.isMobile = this.checkDevice();
+
+				//디바이스 종류에 따라서 레이아웃 변수 설정
+				if (this.isMobile)
+				{
+					var viewport = document.createElement("META");
+
+					viewport.name = "viewport";
+					viewport.content = "initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes, width=device-width";
+
+					document.getElementsByTagName("HEAD")[0].appendChild(viewport);
+					document.getElementsByTagName("BODY")[0].style.margin = "0px";
+
+					if (screen.width < 640)
+					{
+						this.itemWidth = screen.width - 40;
+						//this.itemHeight = 375;
+						this.itemOnViewCount = 1;
+						this.offsetWidth = this.itemWidth + 20;
+						this.viewWidth = this.itemWidth * this.itemOnViewCount;
+						this.viewHeight = this.itemHeight;
+					}
+					else
+					{
+						if (window.location.hostname == "m.joins.com")
+						{
+							this.itemWidth = 728 / 2 - 20;
+							//this.itemHeight = 375;
+							this.itemOnViewCount = 1;
+							this.offsetWidth = this.itemWidth + 20;
+							this.viewWidth = this.itemWidth * 2 + 40;
+							this.viewHeight = this.itemHeight;
+						}
+						else
+						{
+							this.itemWidth = (screen.width - 40) / 2 - 20;
+							//this.itemHeight = 375;
+							this.itemOnViewCount = 1;
+							this.offsetWidth = this.itemWidth + 20;
+							this.viewWidth = screen.width - 40;
+							this.viewHeight = this.itemHeight;
+						}
+					}
+				}
+				else
+				{
+					/*
+					this.itemWidth = 320;
+					this.itemHeight = 375;
+					this.itemOnViewCount = 3;
+					this.offsetWidth = this.itemWidth + 20;
+					this.viewWidth = this.itemWidth * this.itemOnViewCount + 40;
+					this.viewHeight = this.itemHeight + 40;
+					*/
+
+					this.itemWidth = 480;
+					this.itemHeight = 375;
+					this.itemOnViewCount = 2;
+					this.offsetWidth = this.itemWidth + 20;
+					this.viewWidth = this.itemWidth * this.itemOnViewCount + 20;
+					this.viewHeight = this.itemHeight + 40;
+				}
+
+				this.data = this.loadData(json);
+
+				//레이아웃 구성
+				this.container = document.getElementById("ms-container-0");
+
+				this.view = document.createElement("DIV");
+				this.view.id = "ms-view-0";
+
+				this.list = document.createElement("UL");
+				this.list.id = "ms-list-0";
+
+				this.container.appendChild(this.view);
+				this.view.appendChild(this.list);
+
+				this.setContainer();
+				this.setList();
+				this.setControl();
+			}
+
+			mediaSlider.loadData = function (json) {
+
+				var data = new Array();
+				var obj = JSON.parse(json);
+				var length = obj.data.length;
+				var itemOnViewCount = this.itemOnViewCount;
+
+				for (var i = 0; i < length; i++)
+				{
+					data[i] = new Object();
+					data[i].id = i;
+
+					data[i].type = obj.data[i].type;
+					data[i].contentId = obj.data[i].contentId;
+					data[i].title = obj.data[i].title.replace("\"", "&quot");
+					data[i].summary = obj.data[i].summary.replace("\"", "&quot");
+					data[i].url = obj.data[i].url;
+					data[i].thumbnailImage = obj.data[i].thumbnailImage;
+					data[i].updateDate = obj.data[i].updateDate;
+					data[i].author = obj.data[i].author;
+					data[i].profileImage = obj.data[i].profileImage;
+
+					data[i].article = new Array();
+
+					for (var j = 0; j <  obj.data[i].article.length; j++)
+					{
+						data[i].article[j] = new Object();
+
+						data[i].article[j].type = obj.data[i].article[j].type;
+						data[i].article[j].contentId = obj.data[i].article[j].contentId;
+						data[i].article[j].title = obj.data[i].article[j].title.replace("\"", "&quot");
+						data[i].article[j].summary = obj.data[i].article[j].summary.replace("\"", "&quot");
+						data[i].article[j].url = obj.data[i].article[j].url;
+						data[i].article[j].thumbnailImage = obj.data[i].article[j].thumbnailImage;
+						data[i].article[j].updateDate = obj.data[i].article[j].updateDate;
+						data[i].article[j].author = obj.data[i].article[j].author;
+						data[i].article[j].profileImage = obj.data[i].article[j].profileImage;
+					}
+
+					data[i].sale = new Object();
+
+					data[i].sale.listPrice = obj.data[i].sale.listPrice;
+					data[i].sale.salePrice = obj.data[i].sale.salePrice;
+				}
+
+				if (length < itemOnViewCount + 2)
+				{
+
+					for (var i = length; i < length * 2; i++)
+					{
+						data[i] = new Object();
+						data[i].id = i;
+
+						data[i].type = data[i - length].type;
+						data[i].contentId = data[i - length].contentId;
+						data[i].title = data[i - length].title;
+						data[i].summary = data[i - length].summary;
+						data[i].url = data[i - length].url;
+						data[i].thumbnailImage = data[i - length].thumbnailImage;
+						data[i].updateDate = data[i - length].updateDate;
+						data[i].author = data[i - length].author;
+						data[i].profileImage = data[i - length].profileImage;
+
+						data[i].article = new Array();
+
+						for (var j = 0; j <  data[i - length].article.length; j++)
+						{
+							data[i].article[j] = new Object();
+
+							data[i].article[j].type = data[i - length].article[j].type;
+							data[i].article[j].contentId = data[i - length].article[j].contentId;
+							data[i].article[j].title = data[i - length].article[j].title;
+							data[i].article[j].summary = data[i - length].article[j].summary;
+							data[i].article[j].url = data[i - length].article[j].url;
+							data[i].article[j].thumbnailImage = data[i - length].article[j].thumbnailImage;
+							data[i].article[j].updateDate = data[i - length].article[j].updateDate;
+							data[i].article[j].author = data[i - length].article[j].author;
+							data[i].article[j].profileImage = data[i - length].article[j].profileImage;
+						}
+
+						data[i].sale = new Object();
+
+						data[i].sale.listPrice = data[i - length].sale.listPrice;
+						data[i].sale.salePrice = data[i - length].sale.salePrice;
+					}
+				}
+
+				return data;
+			}
+
+			mediaSlider.setContainer = function () {
+
+				var container = this.container;
+				var view = this.view;
+				var width = this.viewWidth;
+				var height = this.viewHeight;
+				var length = this.data.length;
+
+				if (this.isMobile)
+				{
+					container.style.position = "relative";
+					container.style.overflow = "hidden";
+					container.style.width = "100%";
+					container.style.backgroundColor = "#fff";
+					container.style.padding = "0px";
+
+					//단순 나열 방식
+					view.style.position = "relative";
+					view.style.overflow = "hidden";
+					view.style.width = width + "px";
+					view.style.margin = "0px auto";
+
+					//좌우 스와이프 방식
+					/*
+					view.style.position = "relative";
+					view.style.overflow = "hidden";
+					view.style.width = width + "px";
+					view.style.height = height + "px";
+					view.style.margin = "0px auto";
+					*/
+				}
+				else
+				{
+					container.style.position = "relative";
+					container.style.overflow = "hidden";
+					container.style.width = "1200px";
+					container.style.backgroundColor = "#2c2c2e";
+					container.style.padding = "20px 0px 0px 0px";
+
+					view.style.position = "relative";
+					view.style.overflow = "hidden";
+					view.style.width = width + "px";
+					view.style.height = height + "px";
+					view.style.margin = "0px auto";
+				}
+
+				return container;
+			}
+
+			mediaSlider.setList = function () {
+
+				var data = this.data;
+				var list = this.list;
+				var offsetWidth = this.offsetWidth;
+				var itemOnViewCount = this.itemOnViewCount;
+
+				if (this.isMobile)
+				{
+					list.style.listStyle = "none";
+					list.style.margin = "0px";
+					list.style.padding = "0px";
+
+					//단순 나열 방식
+					var length = data.length;
+
+					for (var i = 0; i < length; i++)
+					{
+						list.appendChild(this.setItem(i));
+					}
+
+					//좌우 스와이프 방식
+					/*
+					var prevItem = null;
+					var nextItem = null;
+
+					for (var i = 0; i < itemOnViewCount; i++)
+					{
+						list.appendChild(this.setItem(i));
+					}
+					
+					prevItem = this.setItem(data.length - 1);
+					nextItem = this.setItem(itemOnViewCount);
+
+					//prevItem.style.opacity = "0";
+					//nextItem.style.opacity = "0";
+
+					prevItem.style.left = -1 * offsetWidth + "px";
+					nextItem.style.left = itemOnViewCount * offsetWidth + "px";
+
+					prevItem.style.left = -1 * offsetWidth + "px";
+					nextItem.style.left = itemOnViewCount * offsetWidth + "px";
+
+					list.insertBefore(prevItem, list.childNodes[0]);
+					list.appendChild(nextItem);
+					*/
+				}
+				else
+				{
+					var prevItem = null;
+					var nextItem = null;
+
+					list.style.listStyle = "none";
+					list.style.margin = "0px";
+					list.style.padding = "0px";
+
+					for (var i = 0; i < itemOnViewCount; i++)
+					{
+						list.appendChild(this.setItem(i));
+					}
+					
+					prevItem = this.setItem(data.length - 1);
+					nextItem = this.setItem(itemOnViewCount);
+
+					prevItem.style.opacity = "0";
+					nextItem.style.opacity = "0";
+
+					prevItem.style.left = -1 * offsetWidth + "px";
+					nextItem.style.left = itemOnViewCount * offsetWidth + "px";
+
+					prevItem.style.left = -1 * offsetWidth + "px";
+					nextItem.style.left = itemOnViewCount * offsetWidth + "px";
+
+					list.insertBefore(prevItem, list.childNodes[0]);
+					list.appendChild(nextItem);
+				}
+
+				for (var i = 0; i < itemOnViewCount + 2; i++)
+				{
+					this.setTransition(list.childNodes[i].id);
+				}
+
+				return list;
+			}
+
+			mediaSlider.setItem = function (seq) {
+
+				var data = this.data;
+				var type = data[seq].type;
+				var itemWidth = this.itemWidth;
+				var itemHeight = this.itemHeight;
+				var offsetWidth = this.offsetWidth;
+				var item = document.createElement("LI");
+
+				if (this.isMobile)
+				{
+					//단순 나열 방식
+					item.setAttribute("seq", seq);
+					item.id = data[seq].id;
+					//item.style.position = "absolute";
+					//item.style.top = "0px";
+					//item.style.left = offsetWidth * seq + "px";
+					item.style.width = itemWidth + "px";
+					//item.style.height = itemHeight + "px";
+					item.style.overflow = "hidden";
+					item.style.margin = "0px 20px 20px 0px";
+
+					item.style.display = "block";
+					item.style.cssFloat = "left";
+
+					//좌우 스와이프 방식
+					/*
+					item.setAttribute("seq", seq);
+					item.id = data[seq].id;
+					item.style.position = "absolute";
+					item.style.top = "0px";
+					item.style.left = offsetWidth * seq + "px";
+					item.style.width = itemWidth + "px";
+					item.style.height = itemHeight + "px";
+					item.style.overflow = "hidden";
+					//item.style.padding = "0px 0px 10px 0px";
+					*/
+				}
+				else
+				{
+					item.setAttribute("seq", seq);
+					item.id = data[seq].id;
+					item.style.position = "absolute";
+					item.style.top = "0px";
+					item.style.left = offsetWidth * seq + "px";
+					item.style.width = itemWidth + "px";
+					item.style.height = itemHeight + "px";
+					item.style.overflow = "hidden";
+				}
+
+				if (type == this.ITEM_TYPE_YOUTUBE)
+				{
+					var content = document.createElement("DIV");
+					var youtube = document.createElement("IFRAME");
+					var text = document.createElement("DIV");
+					var title = document.createElement("DIV");
+					var summary = document.createElement("DIV");
+
+					item.appendChild(content);
+					item.appendChild(text);
+					content.appendChild(youtube);
+					text.appendChild(title);
+					text.appendChild(summary);
+
+					if (this.isMobile)
+					{
+						//단순 나열 방식이면 ITEM_TYPE에 따라 height를 다르게 설정함
+						item.style.height = "275px";
+
+						content.id = item.id + "-1st-child";
+						content.style.position = "relative";
+						content.style.width = "100%";
+						content.style.height = "0";
+						content.style.paddingBottom = "56.25%";
+
+						youtube.style.position = "absolute";
+						youtube.style.width = "100%";
+						youtube.style.height = "100%";
+						youtube.style.border = "0";
+						youtube.src = "https://www.youtube.com/embed/" + data[seq].contentId; // JJaFQd1mX98
+						youtube.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+						youtube.setAttribute("allowfullscreen", "");
+
+						text.id = item.id + "-2nd-child";
+						text.style.margin ="5px 0px 0px 0px";
+
+						title.style = "display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1;";
+						title.style.wordBreak = "break-all";
+						title.style.overflow = "hidden";
+						title.style.fontWeight = "bold";
+						title.style.color = "#6a3efd";
+
+						title.innerHTML = data[seq].title;
+
+						summary.style = "display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;";
+						summary.style.wordBreak = "break-all";
+						summary.style.overflow = "hidden";
+						summary.style.margin = "5px 0px 0px 0px";
+						summary.style.color = "#171717";
+
+						summary.innerHTML = data[seq].summary;
+					}
+					else
+					{
+						content.id = item.id + "-1st-child";
+						content.style.position = "relative";
+						content.style.width = "100%";
+						content.style.height = "0";
+						content.style.paddingBottom = "56.25%";
+
+						youtube.style.position = "absolute";
+						youtube.style.width = "100%";
+						youtube.style.height = "100%";
+						youtube.style.border = "0";
+						youtube.src = "https://www.youtube.com/embed/" + data[seq].contentId; // JJaFQd1mX98
+						youtube.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+						youtube.setAttribute("allowfullscreen", "");
+
+						text.id = item.id + "-2nd-child";
+						text.style.padding ="15px 0px 15px 0px";
+
+						title.style = "display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1;";
+						title.style.wordBreak = "break-all";
+						title.style.overflow = "hidden";
+						title.style.marginBottom = "5px";
+						title.style.fontWeight = "bold";
+						title.style.color = "#6a3efd";
+
+						title.innerHTML = data[seq].title;
+
+						summary.style = "display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;";
+						summary.style.worBreak = "break-all";
+						summary.style.overflow = "hidden";
+						summary.style.color = "#fff";
+
+						summary.innerHTML = data[seq].summary;
+					}
+				}
+				else if (type == this.ITEM_TYPE_ARTICLE)
+				{
+					var articleListContainer = document.createElement("DIV");
+					var articleListTitle = document.createElement("SPAN");
+					var articleList = document.createElement("UL");
+					var length = data[seq].article.length;
+
+					item.appendChild(articleListContainer);
+
+					articleListContainer.appendChild(articleListTitle);
+					articleListContainer.appendChild(articleList);
+
+					articleListContainer.id = item.id + "-1st-child";
+					articleListTitle.innerHTML = data[seq].title;
+
+					if (this.isMobile)
+					{
+						articleListContainer.style.padding = "0px";
+						articleListContainer.style.background = "#fff";
+						articleList.style.listStyle = "none";
+						articleList.style.margin = "0px";
+						articleList.style.padding = "0px";
+					}
+					else
+					{
+						articleListContainer.style.padding = "0px";
+						articleListContainer.style.background = "#fff";
+						articleListContainer.style.height = itemHeight + "px";
+						articleListTitle.style.display = "block";
+						articleListTitle.style.padding = "20px 0px 0px 20px";
+						articleListTitle.style.color = "#6a3efd";
+						articleList.style.listStyle = "none";
+						articleList.style.margin = "0px";
+						articleList.style.padding = "20px";
+						articleList.style.background = "#fff";
+					}
+
+					for (var i = 0; i < length; i++)
+					{
+						var article = document.createElement("LI");
+						var url = document.createElement("A");
+						var thumbnailImageContainer = document.createElement("DIV");
+						var thumbnailImage = document.createElement("IMG");
+						var title = document.createElement("DIV");
+						var profileContainer = document.createElement("DIV");
+						var profileImageContainer = document.createElement("SPAN");
+						var profileImage = document.createElement("IMG");
+						var author = document.createElement("SPAN");
+						var separator = document.createElement("SPAN");
+						var updateDate = document.createElement("SPAN");
+
+						articleList.appendChild(article);
+						article.appendChild(url);
+						url.appendChild(thumbnailImageContainer);
+						url.appendChild(title);
+						url.appendChild(profileContainer);
+
+						thumbnailImageContainer.appendChild(thumbnailImage);
+
+						profileContainer.appendChild(profileImageContainer);
+						profileContainer.appendChild(author);
+						profileContainer.appendChild(separator);
+						profileContainer.appendChild(updateDate);
+
+						profileImageContainer.appendChild(profileImage);
+
+						article.id = articleListContainer.id + "-" + data[seq].article[i].contentId;
+
+						if (i == length - 1)
+						{
+							article.style.height = "100px";
+						}
+						else
+						{
+							article.style.height = "100px";
+							article.style.borderBottom = "1px solid rgba(0,0,0,0.1)";
+						}
+
+						url.style.display = "block";
+						url.style.padding = "10px 0px";
+						url.style.textDecoration = "none";
+
+						url.target = "_blank";
+						url.href = data[seq].article[i].url;
+
+						thumbnailImageContainer.style.cssFloat = "right";
+						thumbnailImageContainer.style.width = "100px";
+						thumbnailImageContainer.style.height = "80px";
+						thumbnailImageContainer.style.overflow= "hidden";
+						thumbnailImageContainer.style.marginLeft = "10px";
+
+						thumbnailImage.style.width = "100%";
+						thumbnailImage.src = data[seq].article[i].thumbnailImage;
+
+						title.style = "display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;";
+						title.style.wordBreak = "break-all";
+						title.style.overflow = "hidden";
+						title.style.marginBottom = "5px";
+						title.style.lineHeight = "1.5em";
+						title.style.color = "#000";
+
+						title.innerHTML = data[seq].article[i].title;
+
+						profileContainer.style.display = "table";
+						profileContainer.style.tableLlayout = "fixed";
+
+						profileImageContainer.style.display = "inline-block"; 			profileImageContainer.style.verticalAlign = "middle";
+						profileImageContainer.style.width = "24px";
+						profileImageContainer.style.height = "24px";
+						profileImageContainer.style.paddingRight = "5px";
+
+						profileImage.style.width = "100%";
+						profileImage.style.borderRadius = "24px";
+						profileImage.src = data[seq].profileImage;
+
+						author.style.fontSize = "14px";
+						author.style.color = "#999";
+						author.innerHTML = data[seq].author;
+
+						separator.style = "display: inline-block; width: 1px; height: 8px; margin-left: 5px; margin-right: 5px; background: #999;";
+
+
+						separator.style.display = "inline-block";
+						separator.style.width = "1px";
+						separator.style.height = "8px";
+						separator.style.marginLeft = "5px";
+						separator.style.marginRight = "5px";
+						separator.style.background = "#999";
+
+						updateDate.style.fontSize = "14px";
+						updateDate.style.color = "#999";
+						updateDate.innerHTML = data[seq].article[i].updateDate;
+					}
+				}
+				else if (type == this.ITEM_TYPE_PRODUCT)
+				{
+					var productContainer = document.createElement("DIV");
+					var productUrl = document.createElement("A");
+					var productInfo = document.createElement("DIV");
+					var paymentButtonUrl = document.createElement("A");
+					var paymentButton = document.createElement("DIV");
+					var thumbnailImageContainer = document.createElement("DIV");
+					var thumbnailImage = document.createElement("IMG");
+					var productTitle = document.createElement("DIV");
+					var productPrice = document.createElement("DIV");
+					var productSalePrice = document.createElement("SPAN");
+					var productCurrencyUnit = document.createElement("SPAN");
+					var productListPrice = document.createElement("SPAN");
+					var productSaleRate = document.createElement("SPAN");
+					var listPrice = Number(data[seq].sale.listPrice);
+					var salePrice = Number(data[seq].sale.salePrice);
+
+					item.appendChild(productContainer);
+
+					productContainer.appendChild(productUrl)
+					productContainer.appendChild(productInfo)
+					productContainer.appendChild(paymentButtonUrl)
+
+					productUrl.appendChild(thumbnailImageContainer)
+					thumbnailImageContainer.appendChild(thumbnailImage)
+					productInfo.appendChild(productTitle);
+					productInfo.appendChild(productPrice);
+					productPrice.appendChild(productSalePrice);
+					productPrice.appendChild(productCurrencyUnit);
+					productPrice.appendChild(productListPrice);
+					productPrice.appendChild(productSaleRate);
+					paymentButtonUrl.appendChild(paymentButton);
+
+					productContainer.id = item.id + "-1st-child";
+
+					if (this.isMobile)
+					{
+						productContainer.style.padding = "0px";
+						productContainer.style.background = "#fff";
+						productContainer.style.height = itemHeight + "px";
+
+						paymentButton.style.border = "none";
+						paymentButton.style.textAlign = "center";
+						paymentButton.style.fontSize = "16px";
+						paymentButton.style.color = "#fff";
+						paymentButton.style.lineHeight = "55px";
+						paymentButton.style.background = "#6a3efd";				paymentButton.style.borderRadius = "2px";
+						paymentButton.style.cursor = "pointer";
+						paymentButton.style.width = itemWidth + "px";
+					}
+					else
+					{
+						productContainer.style.display = "relative";
+						productContainer.style.padding = "20px";
+						productContainer.style.background = "#fff";
+
+						productContainer.style.height = itemHeight + "px";
+
+						paymentButton.style.position = "absolute";
+						paymentButton.style.border = "none";
+						paymentButton.style.textAlign = "center";
+						paymentButton.style.fontSize = "14px";
+						paymentButton.style.color = "#fff";
+						paymentButton.style.lineHeight = "60px";
+						paymentButton.style.background = "#6a3efd";
+						paymentButton.style.borderRadius = "2px";
+						paymentButton.style.cursor = "pointer";
+						paymentButton.style.width = itemWidth - 40 + "px";
+						paymentButton.style.bottom = "20px";
+					}
+
+					productUrl.target = "_blank";
+					productUrl.href = data[seq].url;
+
+					thumbnailImageContainer.style.overflow = "hidden";
+					thumbnailImageContainer.style.height = "200px";
+					thumbnailImageContainer.style.textAlign = "center";
+
+					thumbnailImage.style.height = "100%";
+					thumbnailImage.src = data[seq].thumbnailImage;
+
+					productInfo.style.margin = "5px 0px 10px 0px";
+
+					productTitle.style = "display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1;";
+					productTitle.style.wordBreak = "break-all";
+					productTitle.style.overflow = "hidden";
+					productTitle.style.marginBottom = "5px";
+
+					productTitle.innerHTML = data[seq].title;
+
+					productSalePrice.style.fontSize = "18px";
+					productSalePrice.style.fontWeight = "bold";
+
+					productSalePrice.innerHTML = salePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+					productCurrencyUnit.style.fontSize = "14px";
+					productCurrencyUnit.innerHTML = "원";
+
+					if (listPrice > 0)
+					{
+						productListPrice.style.margin = "0px 0px 0px 5px";
+						productListPrice.style.fontSize = "12px";
+						productListPrice.style.color = "#999";
+						productListPrice.style.textDecoration = "line-through";
+
+						productListPrice.innerHTML = listPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+						productSaleRate.style.margin = "0px 0px 0px 5px";
+						productSaleRate.style.fontSize = "14px";
+						productSaleRate.style.fontWeight = "bold";
+						productSaleRate.style.color = "#6a3efd";
+
+						productSaleRate.innerHTML =	Math.round((listPrice - salePrice) / listPrice * 100) + "%";
+					}
+
+					paymentButtonUrl.style.textDecoration = "none";
+					paymentButtonUrl.target = "_blank";
+					paymentButtonUrl.href = data[seq].url;
+					paymentButton.innerHTML = "구매하기";
+				}
+				else
+				{
+					console.log("item type error on setting item!");
+				}
+
+				return item;
+			}
+
+			mediaSlider.setControl = function () {
+
+				if (this.isMobile)
+				{
+					//단순 나열 방식
+					return;
+
+					//좌우 스와이프 방식
+					/*
+					var that = this;
+					var data = this.data;
+					var view = this.view;
+					var list = this.list;
+					var itemOnViewCount = this.itemOnViewCount;
+					var itemWidth = this.itemWidth;
+					var offsetWidth = this.offsetWidth;
+					var touchstartX = 0;
+					var touchmoveX = 0;
+					var touchoffsetX = 0;
+					var progressbarUnitWidth = Math.round(itemWidth / data.length);
+
+					//check if original data is fewer than itemOnViewCount + 2
+					if (data[0].contentId == data[Math.round(data.length / 2)].contentId)
+					{
+						progressbarUnitWidth = progressbarUnitWidth * 2;
+					}
+
+					//creat progressbar
+					var progressbar = document.createElement("DIV");
+					var progressbarFilled = document.createElement("SPAN");
+
+					//add progressbar to view
+					progressbar.appendChild(progressbarFilled);
+					view.appendChild(progressbar);
+
+					progressbar.id = view.id + "-progressbar";
+					progressbar.style.position = "absolute";
+					progressbar.style.overflow = "hidden";
+					progressbar.style.top = (view.offsetHeight - 20) + "px";
+					progressbar.style.width = itemWidth + "px";
+					progressbar.style.height = "1px";
+					progressbar.style.backgroundColor = "#eaeaea";
+
+					progressbarFilled.id = view.id + "-progressbar-filled";
+					progressbarFilled.style.position = "absolute";
+					progressbarFilled.style.width = progressbarUnitWidth + "px";
+					progressbarFilled.style.height = "1px";
+					progressbarFilled.style.backgroundColor = "#6a3efd";
+
+					this.setTransition(progressbarFilled.id);
+
+					//set touch event
+					view.addEventListener("touchstart",
+
+						function (event) {
+
+							for (var i = 0; i < itemOnViewCount + 2; i++)
+							{
+								that.removeTransition(list.childNodes[i].id);
+							}
+
+							touchstartX = event.touches[0].clientX;
+
+							//console.log("touchstartX = " + touchstartX);
+						}
+					);
+
+					view.addEventListener("touchmove",
+
+						function (event) {
+
+							touchmoveX = event.touches[0].clientX;
+							touchoffsetX = touchmoveX - touchstartX;
+
+							//console.log("touchoffsetX = " + touchoffsetX);
+
+							if (touchoffsetX < -20 || touchoffsetX > 20) {
+
+								event.preventDefault();
+
+								for (var i = 0; i < itemOnViewCount + 2; i++)
+								{
+									var item = that.getNode(list.childNodes[i].id);
+
+									item.style.left = (i - 1) * offsetWidth + touchoffsetX + "px";
+								}
+							}
+						}
+					);
+
+					view.addEventListener("touchend",
+
+						function (event) {
+
+							console.log("touchoffsetX = " + touchoffsetX);
+
+							for (var i = 0; i < itemOnViewCount + 2; i++)
+							{
+								that.setTransition(list.childNodes[i].id);
+							}
+
+							if (touchoffsetX < -0.2 * offsetWidth)
+							{
+								//reset touchoffsetX
+								touchoffsetX = 0;
+
+								//set progressbar width
+								var width = Number(progressbarFilled.style.width.replace(/[px]/gi,""));
+
+								if (width >= itemWidth)
+								{
+									width = 0;
+								}
+
+								progressbarFilled.style.width = width + progressbarUnitWidth + "px";
+
+								that.moveNext();
+								return;
+							}
+
+							if (touchoffsetX > 0.2 * offsetWidth)
+							{
+								//reset touchoffsetX
+								touchoffsetX = 0;
+
+								//set progressbar width
+								var width = Number(progressbarFilled.style.width.replace(/[px]/gi,""));
+
+								if (width <= progressbarUnitWidth)
+								{
+									width = itemWidth + progressbarUnitWidth;
+								}
+
+								progressbarFilled.style.width = width - progressbarUnitWidth + "px";
+
+								that.movePrev();
+								return;
+							}
+
+							for (var i = 0; i < itemOnViewCount + 2; i++)
+							{
+								//reset touchoffsetX
+								touchoffsetX = 0;
+
+								var item = that.getNode(list.childNodes[i].id);
+
+								item.style.left = (i - 1) * offsetWidth + "px";
+							}
+						}
+					);
+					*/
+				}
+				else
+				{
+					var container = this.container;
+					var btn_prev = document.createElement("BUTTON");
+					var btn_next = document.createElement("BUTTON");
+
+					container.appendChild(btn_prev);
+					container.appendChild(btn_next);
+
+					btn_prev.style.position = "absolute";
+					btn_prev.style.top = "167.5px";
+					btn_prev.style.left = "40px";
+					btn_prev.style.width = "35px";
+					btn_prev.style.height = "65px";
+					btn_prev.style.backgroundSize = "70px";
+					btn_prev.style.backgroundPosition = "0px -66px";
+					btn_prev.style.backgroundColor = "#2c2c2e";
+					btn_prev.style.backgroundImage = "url(https://images.joins.com/ui_joins/joins_store/joins2019/main/k_main_sld_move.png)";
+					btn_prev.style.border = "none";
+					btn_prev.style.cursor = "pointer";
+					btn_prev.style.textIndent = "-9999em";
+
+					btn_next.style.position = "absolute";
+					btn_next.style.top = "167.5px";
+					btn_next.style.right = "40px";
+					btn_next.style.width = "35px";
+					btn_next.style.height = "65px";
+					btn_next.style.backgroundSize = "70px";
+					btn_next.style.backgroundPosition = "-35px -66px";
+					btn_next.style.backgroundColor = "#2c2c2e";
+					btn_next.style.backgroundImage = "url(https://images.joins.com/ui_joins/joins_store/joins2019/main/k_main_sld_move.png)";
+					btn_next.style.border = "none";
+					btn_next.style.cursor = "pointer";
+					btn_next.style.textIndent = "-9999em";
+
+					btn_prev.onclick = function () {mediaSlider.movePrev(); return false;}
+					btn_prev.onmouseover = function () {btn_prev.style.backgroundPosition = "0px 0px";}
+					btn_prev.onmouseout = function () {btn_prev.style.backgroundPosition = "0px -66px";}
+
+					btn_next.onclick = function () {mediaSlider.moveNext(); return false;}
+					btn_next.onmouseover = function () {btn_next.style.backgroundPosition = "-35px 0px";}
+					btn_next.onmouseout = function () {btn_next.style.backgroundPosition = "-35px -66px";}
+				}
+			}
+
+			mediaSlider.movePrev = function () {
+
+				var data = this.data;
+				var list = this.list;
+				var itemOnViewCount = this.itemOnViewCount;
+				var offsetWidth = this.offsetWidth;
+
+				if (this.isMobile)
+				{
+					var prevItemSeq = 0;
+					var prevItem = null;
+
+					//move items to the right
+					for (var i = 0; i < itemOnViewCount + 2; i++)
+					{
+						var item = this.getNode(list.childNodes[i].id);
+
+						item.style.left = i * offsetWidth + "px";
+					}
+
+					//remove unnecessary item
+					list.removeChild(list.lastChild);
+
+					//append new prev item
+					prevItemSeq = Number(list.childNodes[0].getAttribute("seq")) - 1;
+
+					if (prevItemSeq < 0)
+					{
+						prevItemSeq = data.length - 1;
+					}
+
+					prevItem = this.setItem(prevItemSeq);
+
+					//prevItem.style.opacity = "0";
+
+					prevItem.style.left = -1 * offsetWidth + "px";
+
+					list.insertBefore(prevItem, list.childNodes[0]);
+				}
+				else
+				{
+					var prevItemSeq = 0;
+					var prevItem = null;
+
+					//move items to the right
+					for (var i = 0; i < itemOnViewCount + 2; i++)
+					{
+						var item = this.getNode(list.childNodes[i].id);
+
+						if (i > itemOnViewCount - 1)
+						{
+							item.style.opacity = "0";
+						}
+						else
+						{
+							item.style.opacity = "1";
+						}
+
+						item.style.left = i * offsetWidth + "px";
+					}
+
+					//remove unnecessary item
+					list.removeChild(list.lastChild);
+
+					//append new prev item
+					prevItemSeq = Number(list.childNodes[0].getAttribute("seq")) - 1;
+
+					if (prevItemSeq < 0)
+					{
+						prevItemSeq = data.length - 1;
+					}
+
+					prevItem = this.setItem(prevItemSeq);
+
+					list.insertBefore(prevItem, list.childNodes[0]);
+
+					prevItem.style.opacity = "0";
+
+					prevItem.style.left = -1 * offsetWidth + "px";
+
+					this.setTransition(prevItem.id);
+				}
+
+				return;
+			}
+
+			mediaSlider.moveNext = function () {
+
+				var data = this.data;
+				var list = this.list;
+				var itemOnViewCount = this.itemOnViewCount;
+				var offsetWidth = this.offsetWidth;
+
+				if (this.isMobile)
+				{
+					var nextItemSeq = 0;
+					var nextItem = null;
+
+					//move items to the right
+					for (var i = itemOnViewCount + 1; i > -1; i--)
+					{
+						var item = this.getNode(list.childNodes[i].id);
+
+						item.style.left = (i - 2) * offsetWidth + "px";
+					}
+
+					//remove unnecessary item
+					list.removeChild(list.childNodes[0]);
+
+					//append new next item
+					nextItemSeq = Number(list.childNodes[itemOnViewCount].getAttribute("seq")) + 1;
+
+					if (nextItemSeq > data.length - 1)
+					{
+						nextItemSeq = 0;
+					}
+
+					nextItem = this.setItem(nextItemSeq);
+
+					list.appendChild(nextItem);
+
+					//nextItem.style.opacity = "0";
+
+					nextItem.style.left = itemOnViewCount * offsetWidth + "px";
+				}
+				else
+				{
+					var nextItemSeq = 0;
+					var nextItem = null;
+
+					//move items to the left
+					for (var i = itemOnViewCount + 1; i > -1; i--)
+					{
+						var item = this.getNode(list.childNodes[i].id);
+						var summary = this.getNodeChild(item.id, 1);
+
+						if (i < 2)
+						{
+							item.style.opacity = "0";
+						}
+						else
+						{
+							item.style.opacity = "1";
+						}
+
+						item.style.left = (i - 2) * offsetWidth + "px";
+					}
+
+					//remove unnecessary item
+					list.removeChild(list.childNodes[0]);
+
+					//append new next item
+					nextItemSeq = Number(list.childNodes[itemOnViewCount].getAttribute("seq")) + 1;
+
+					if (nextItemSeq > data.length - 1)
+					{
+						nextItemSeq = 0;
+					}
+
+					nextItem = this.setItem(nextItemSeq);
+
+					list.appendChild(nextItem);
+
+					nextItem.style.opacity = "0";
+
+					nextItem.style.left = itemOnViewCount * offsetWidth + "px";
+
+					this.setTransition(nextItem.id);
+				}
+
+				return;
+			}
+
+			mediaSlider.setTransition = function (id) {
+
+				var item = this.getNode(id);
+
+				if (this.isMobile)
+				{
+					item.style.transition = "all .1s";
+					item.style.transitionTimingFunction = "ease";
+				}
+				else
+				{
+					item.style.transition = "all .5s";
+					item.style.transitionTimingFunction = "cubic-bezier(.45,1,.65,1)";
+				}
+
+				return true;
+			}
+
+			mediaSlider.removeTransition = function (id) {
+
+				var item = this.getNode(id);
+
+				if (this.isMobile)
+				{
+					item.style.transition = "none";
+				}
+
+				return true;
+			}
+
+			mediaSlider.getNode = function (id) {
+			
+				var item = document.getElementById(id);
+
+				return item;
+			}
+
+			mediaSlider.getNodeChild = function (id, seq) {
+
+				var child = this.getNode(id).childNodes[seq];
+
+				return child;
+			}
+
+			mediaSlider.checkDevice = function () {
+
+				var userAgent = navigator.userAgent;
+
+				if (userAgent.match(/iPad|iPhone|iPod|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || userAgent.match(/LG|SAMSUNG|Samsung/) != null)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		</script>
+
+		<script>
+			function openViewer() {
+
+				document.getElementById("msde-viewer-0").style.display = "flex";
+				document.getElementById("msde-viewer-container-0").style.margin = window.scrollY + 30 + "px 0 0 -631px";
+				createMediaSliderData();
+			}
+
+			function closeViewer() {
+
+				document.getElementById("msde-viewer-0").style.display = "none";
+			}
+
+			function convertToHtml(str) {
+
+				str = str.replace(/</g,"&lt;");
+				str = str.replace(/>/g,"&gt;");
+				str = str.replace(/\"/g,"&quot;");
+				str = str.replace(/\'/g,"&#39;");
+				str = str.replace(/\n/g,"<br />");
+
+				return str;
+			}
+
+			function copyEmbedCode() {
+
+				var source = document.getElementById("msde-source-0");
+
+				source.select();
+				source.setSelectionRange(0, source.value.length)
+				document.execCommand("copy");
+			}
+
+			function createMediaSliderData() {
+
+				var title = new Array();
+				var url = new Array();
+				var thumbnailImage = new Array();
+				var listPrice = new Array();
+				var salePrice = new Array();
+
+				var _json = "";
+				var length = 0;
+				var embedCode = "";
+
+				while (document.getElementById("title-" + length) != null)
+				{
+					title[length] = document.getElementById("title-" + length).value;
+					url[length] = document.getElementById("url-" + length).value;
+					thumbnailImage[length] = document.getElementById("thumbnailImage-" + length).value;
+					listPrice[length] = document.getElementById("listPrice-" + length).value;
+					salePrice[length] = document.getElementById("salePrice-" + length).value;
+
+					length++;
+				}
+
+				_json = '{"data": [';
+
+				for (var i = 0; i < length; i++)
+				{
+					_json = _json + 
+
+						'{' +
+							'"type":"2", ' +
+							'"contentId":"' + i + '", ' +
+							'"title":"' + convertToHtml(title[i]) + '", ' +
+							'"summary":"", ' +
+							'"url":"' + convertToHtml(url[i]) + '", ' +
+							'"thumbnailImage":"' + convertToHtml(thumbnailImage[i]) + '", ' +
+							'"updateDate":"", ' +
+							'"author":"", ' +
+							'"profileImage":"", ' +
+							'"article": [{"type":"", "contentId":"", "title":"", "summary":"", "url":"", "thumbnailImage":"", "updateDate":"","author":"", "profileImage":""}], ' +
+							'"sale": {' +
+								'"listPrice":"' + convertToHtml(listPrice[i]) + '", ' +
+								'"salePrice":"' + convertToHtml(salePrice[i]) + '"' +
+							'}' +
+						'}';
+
+					if (i < length - 1)
+					{
+						_json = _json + ', ';
+					}
+				}
+
+				_json = _json + ']}';
+
+				mediaSlider.reset();
+				mediaSlider.init(_json);
+
+				embedCode = "		<script>" + document.getElementById("msde-script-0").innerHTML + "<\/script>";
+				embedCode += "\n		<div id=\"ms-container-0\"><\/div>";
+				embedCode += "\n		<script>";
+				embedCode += "\n			var _json = \'" + _json + "\';";
+				embedCode += "\n			mediaSlider.init(_json);";
+				embedCode += "\n		<\/script>";
+
+				document.getElementById("msde-source-0").value = embedCode;
+			}
+		</script>
+	</head>
+	<body style="margin: 0; padding: 0; font-size: 12px;">
+		<div class="msde-input">
+			<div class="msde-input-title">
+				<span>Product</span>
+			</div>
+			<div class="msde-input-menu-container">
+				<span class="msde-input-menu-item"><a href="./youtube.html">Youtube</a></span>
+				<span class="msde-input-menu-item"><a href="./article.html">Article</a></span>
+				<span class="msde-input-menu-item"><a href="./product.html">Product</a></span>
+			</div>
+			<div class="msde-input-container">
+				<div class="msde-input-item">
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Title</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="title-0" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>URL</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="url-0" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Thumbnail Image</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="thumbnailImage-0" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>List Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="listPrice-0" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Sale Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="salePrice-0" class="msde-form-inputfield">
+						</div>
+					</div>
+				</div>
+
+				<div class="msde-input-item">
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Title</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="title-1" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>URL</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="url-1" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Thumbnail Image</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="thumbnailImage-1" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>List Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="listPrice-1" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Sale Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="salePrice-1" class="msde-form-inputfield">
+						</div>
+					</div>
+				</div>
+
+				<div class="msde-input-item">
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Title</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="title-2" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>URL</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="url-2" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Thumbnail Image</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="thumbnailImage-2" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>List Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="listPrice-2" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Sale Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="salePrice-2" class="msde-form-inputfield">
+						</div>
+					</div>
+				</div>
+
+				<div class="msde-input-item">
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Title</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="title-3" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>URL</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="url-3" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Thumbnail Image</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="thumbnailImage-3" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>List Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="listPrice-3" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Sale Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="salePrice-3" class="msde-form-inputfield">
+						</div>
+					</div>
+				</div>
+
+				<div class="msde-input-item">
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Title</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="title-4" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>URL</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="url-4" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Thumbnail Image</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="thumbnailImage-4" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>List Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="listPrice-4" class="msde-form-inputfield">
+						</div>
+					</div>
+
+					<div class="msde-input-data">
+						<div class="msde-input-data-label">
+							<span>Sale Price</span>
+						</div>
+						<div class="msde-input-data-field">
+							<input type="text" id="salePrice-4" class="msde-form-inputfield">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button type="button" style="margin: 10px auto 0; width: 1202px; height: 30px;" onclick="openViewer()">소스 보기</button>
+
+		</div>
+
+		<div id="msde-viewer-0" class="msde-viewer">
+			<div id="msde-viewer-container-0" class="msde-viewer-container">
+				<div id="ms-container-0"></div>
+				<div style="border: 1px solid #ccc;">
+					<textarea id="msde-source-0" class="msde-form-textarea" rows="20"></textarea>
+				</div>
+				<div style="margin: 10px 0 0 0;">
+					<button style="width: 1074px; height: 30px;" onclick="copyEmbedCode()">소스 복사</button>
+					<button style="width: 120px; height: 30px;" onclick="closeViewer()">닫기</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
