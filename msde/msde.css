@@ -1,4 +1,4 @@
-.msde-input {width: 1200px; margin: 30px auto;}
+.msde-input {width: 720px; margin: 30px auto;}
 .msde-input-title {line-height: 30px; font-size: 16px; display: inline-block; }
 .msde-input-menu-container {float: right; line-height: 30px; display: inline-block;}
 .msde-input-menu-item {margin: 0 0 0 10px;}
@@ -6,8 +6,9 @@
 .msde-input-item {padding: 30px 30px 20px 30px; border-bottom: 1px solid #ccc;}
 .msde-input-data {margin: 0 0 10px 0; display: flex; flex-direction: row; justify-content: flex-start; align-items: flex-start;}
 .msde-input-data-label {width: 160px; text-align: right;}
-.msde-input-data-field {width: 1040px; margin: 0 0 0 10px;}
-.msde-form-inputfield {width: 1000px; border: 1px solid #ccc; padding: 4px; font-size: 12px;}
+.msde-input-data-field {/*width: 1040px;*/ margin: 0 0 0 10px;}
+.msde-form-inputfield {width: 478px; border: 1px solid #ccc; padding: 4px; font-size: 12px;}
 .msde-form-textarea {width: 1198px; padding: 0; border: none;}
+.msde-form-button-preview {margin: 10px auto 0; width: 720px; height: 30px;}
 .msde-viewer {width: 100%; height: 100%; display: none; position: absolute; top: 0px;}
 .msde-viewer-container {margin: 30px 0 0 -631px; position: absolute; left: 50%; padding: 30px; border: 1px solid #ccc; background: #fff; box-shadow: 1px 1px 5px 1px #ccc;}
