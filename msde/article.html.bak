@@ -2,7 +2,7 @@
 <html lang="ko">
 	<head>
 		<meta charset="euc-kr">
-		<meta name="Generator" content="EditPlus¢ç">
+		<meta name="Generator" content="EditPlusÂ®">
 		<meta name="Author" content="">
 		<meta name="Keywords" content="">
 		<meta name="Description" content="">
@@ -37,10 +37,10 @@
 				this.ITEM_TYPE_ARTICLE = 1;
 				this.ITEM_TYPE_PRODUCT = 2;
 
-				//µğ¹ÙÀÌ½º Ã¼Å©
+				//ë””ë°”ì´ìŠ¤ ì²´í¬
 				this.isMobile = this.checkDevice();
 
-				//µğ¹ÙÀÌ½º Á¾·ù¿¡ µû¶ó¼­ ·¹ÀÌ¾Æ¿ô º¯¼ö ¼³Á¤
+				//ë””ë°”ì´ìŠ¤ ì¢…ë¥˜ì— ë”°ë¼ì„œ ë ˆì´ì•„ì›ƒ ë³€ìˆ˜ ì„¤ì •
 				if (this.isMobile)
 				{
 					var viewport = document.createElement("META");
@@ -103,7 +103,7 @@
 
 				this.data = this.loadData(json);
 
-				//·¹ÀÌ¾Æ¿ô ±¸¼º
+				//ë ˆì´ì•„ì›ƒ êµ¬ì„±
 				this.container = document.getElementById("ms-container-0");
 
 				this.view = document.createElement("DIV");
@@ -226,13 +226,13 @@
 					container.style.backgroundColor = "#fff";
 					container.style.padding = "0px";
 
-					//´Ü¼ø ³ª¿­ ¹æ½Ä
+					//ë‹¨ìˆœ ë‚˜ì—´ ë°©ì‹
 					view.style.position = "relative";
 					view.style.overflow = "hidden";
 					view.style.width = width + "px";
 					view.style.margin = "0px auto";
 
-					//ÁÂ¿ì ½º¿ÍÀÌÇÁ ¹æ½Ä
+					//ì¢Œìš° ìŠ¤ì™€ì´í”„ ë°©ì‹
 					/*
 					view.style.position = "relative";
 					view.style.overflow = "hidden";
@@ -272,7 +272,7 @@
 					list.style.margin = "0px";
 					list.style.padding = "0px";
 
-					//´Ü¼ø ³ª¿­ ¹æ½Ä
+					//ë‹¨ìˆœ ë‚˜ì—´ ë°©ì‹
 					var length = data.length;
 
 					for (var i = 0; i < length; i++)
@@ -280,7 +280,7 @@
 						list.appendChild(this.setItem(i));
 					}
 
-					//ÁÂ¿ì ½º¿ÍÀÌÇÁ ¹æ½Ä
+					//ì¢Œìš° ìŠ¤ì™€ì´í”„ ë°©ì‹
 					/*
 					var prevItem = null;
 					var nextItem = null;
@@ -355,7 +355,7 @@
 
 				if (this.isMobile)
 				{
-					//´Ü¼ø ³ª¿­ ¹æ½Ä
+					//ë‹¨ìˆœ ë‚˜ì—´ ë°©ì‹
 					item.setAttribute("seq", seq);
 					item.id = data[seq].id;
 					//item.style.position = "absolute";
@@ -369,7 +369,7 @@
 					item.style.display = "block";
 					item.style.cssFloat = "left";
 
-					//ÁÂ¿ì ½º¿ÍÀÌÇÁ ¹æ½Ä
+					//ì¢Œìš° ìŠ¤ì™€ì´í”„ ë°©ì‹
 					/*
 					item.setAttribute("seq", seq);
 					item.id = data[seq].id;
@@ -410,7 +410,7 @@
 
 					if (this.isMobile)
 					{
-						//´Ü¼ø ³ª¿­ ¹æ½ÄÀÌ¸é ITEM_TYPE¿¡ µû¶ó height¸¦ ´Ù¸£°Ô ¼³Á¤ÇÔ
+						//ë‹¨ìˆœ ë‚˜ì—´ ë°©ì‹ì´ë©´ ITEM_TYPEì— ë”°ë¼ heightë¥¼ ë‹¤ë¥´ê²Œ ì„¤ì •í•¨
 						item.style.height = "275px";
 
 						content.id = item.id + "-1st-child";
@@ -713,7 +713,7 @@
 					productSalePrice.innerHTML = salePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 					productCurrencyUnit.style.fontSize = "14px";
-					productCurrencyUnit.innerHTML = "¿ø";
+					productCurrencyUnit.innerHTML = "ì›";
 
 					if (listPrice > 0)
 					{
@@ -735,7 +735,7 @@
 					paymentButtonUrl.style.textDecoration = "none";
 					paymentButtonUrl.target = "_blank";
 					paymentButtonUrl.href = data[seq].url;
-					paymentButton.innerHTML = "±¸¸ÅÇÏ±â";
+					paymentButton.innerHTML = "êµ¬ë§¤í•˜ê¸°";
 				}
 				else
 				{
@@ -749,10 +749,10 @@
 
 				if (this.isMobile)
 				{
-					//´Ü¼ø ³ª¿­ ¹æ½Ä
+					//ë‹¨ìˆœ ë‚˜ì—´ ë°©ì‹
 					return;
 
-					//ÁÂ¿ì ½º¿ÍÀÌÇÁ ¹æ½Ä
+					//ì¢Œìš° ìŠ¤ì™€ì´í”„ ë°©ì‹
 					/*
 					var that = this;
 					var data = this.data;
@@ -1262,33 +1262,33 @@
 								'{' +
 									'"type":"", ' +
 									'"contentId":"' + i + '-0", ' +
-									'"title":"' + article[i].title[0] + '", ' +
+									'"title":"' + convertToHtml(article[i].title[0]) + '", ' +
 									'"summary":"", ' +
-									'"url":"' + article[i].url[0] + '", ' +
-									'"thumbnailImage":"' + article[i].thumbnailImage[0] + '", ' +
-									'"updateDate":"' + yyyymmdd + '", ' +
+									'"url":"' + convertToHtml(article[i].url[0]) + '", ' +
+									'"thumbnailImage":"' + convertToHtml(article[i].thumbnailImage[0]) + '", ' +
+									'"updateDate":"' + convertToHtml(yyyymmdd) + '", ' +
 									'"author":"", ' +
 									'"profileImage":""' +
 								'}, ' +
 								'{' +
 									'"type":"", ' +
 									'"contentId":"' + i + '-1", ' +
-									'"title":"' + article[i].title[1] + '", ' +
+									'"title":"' + convertToHtml(article[i].title[1]) + '", ' +
 									'"summary":"", ' +
-									'"url":"' + article[i].url[1] + '", ' +
-									'"thumbnailImage":"' + article[i].thumbnailImage[1] + '", ' +
-									'"updateDate":"' + yyyymmdd + '", ' +
+									'"url":"' + convertToHtml(article[i].url[1]) + '", ' +
+									'"thumbnailImage":"' + convertToHtml(article[i].thumbnailImage[1]) + '", ' +
+									'"updateDate":"' + convertToHtml(yyyymmdd) + '", ' +
 									'"author":"", ' +
 									'"profileImage":""' +
 								'}, ' +
 								'{' +
 									'"type":"", ' +
 									'"contentId":"' + i + '-2", ' +
-									'"title":"' + article[i].title[2] + '", ' +
+									'"title":"' + convertToHtml(article[i].title[2]) + '", ' +
 									'"summary":"", ' +
-									'"url":"' + article[i].url[2] + '", ' +
-									'"thumbnailImage":"' + article[i].thumbnailImage[2] + '", ' +
-									'"updateDate":"' + yyyymmdd + '", ' +
+									'"url":"' + convertToHtml(article[i].url[2]) + '", ' +
+									'"thumbnailImage":"' + convertToHtml(article[i].thumbnailImage[2]) + '", ' +
+									'"updateDate":"' + convertToHtml(yyyymmdd) + '", ' +
 									'"author":"", ' +
 									'"profileImage":""' +
 								'}' +
@@ -1388,10 +1388,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨ç</span>
+							<span style="color: #ccc;">â‘ </span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1424,10 +1424,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨è</span>
+							<span style="color: #ccc;">â‘¡</span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1460,10 +1460,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨é</span>
+							<span style="color: #ccc;">â‘¢</span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1525,10 +1525,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨ç</span>
+							<span style="color: #ccc;">â‘ </span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1561,10 +1561,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨è</span>
+							<span style="color: #ccc;">â‘¡</span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1597,10 +1597,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨é</span>
+							<span style="color: #ccc;">â‘¢</span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1662,10 +1662,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨ç</span>
+							<span style="color: #ccc;">â‘ </span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1698,10 +1698,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨è</span>
+							<span style="color: #ccc;">â‘¡</span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1734,10 +1734,10 @@
 
 					<div class="msde-input-data">
 						<div class="msde-input-data-label">
-							<span style="color: #ccc;">¨é</span>
+							<span style="color: #ccc;">â‘¢</span>
 						</div>
 						<div class="msde-input-data-field">
-							<hr style="width: 1008px;border-color: #ccc;" size="1" noshade>
+							<hr class="msde-input-data-underline" size="1" noshade>
 						</div>
 					</div>
 
@@ -1770,7 +1770,7 @@
 				</div>
 			</div>
 
-			<button type="button" style="margin: 10px auto 0; width: 1202px; height: 30px;" onclick="openViewer()">¼Ò½º º¸±â</button>
+			<button type="button" style="margin: 10px auto 0; width: 1202px; height: 30px;" onclick="openViewer()">ì†ŒìŠ¤ ë³´ê¸°</button>
 
 		</div>
 
@@ -1781,8 +1781,8 @@
 					<textarea id="msde-source-0" class="msde-form-textarea" rows="20"></textarea>
 				</div>
 				<div style="margin: 10px 0 0 0;">
-					<button style="width: 1074px; height: 30px;" onclick="copyEmbedCode()">¼Ò½º º¹»ç</button>
-					<button style="width: 120px; height: 30px;" onclick="closeViewer()">´İ±â</button>
+					<button style="width: 1074px; height: 30px;" onclick="copyEmbedCode()">ì†ŒìŠ¤ ë³µì‚¬</button>
+					<button style="width: 120px; height: 30px;" onclick="closeViewer()">ë‹«ê¸°</button>
 				</div>
 			</div>
 		</div>
