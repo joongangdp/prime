@@ -69,7 +69,7 @@ function createMediaSliderData(type) {
 	var dd = (date.getDate() + 1).toString();
 	var yyyymmdd = yyyy + "." + (mm[1] ? mm : "0" + mm[0]) + "." + (dd[1] ? dd : "0" + dd[0]);
 
-	if (type == "0")
+	if (type == 0)
 	{
 		while (document.getElementById("title-" + length) != null)
 		{
@@ -109,7 +109,7 @@ function createMediaSliderData(type) {
 		_json = _json + ']}';
 	}
 
-	if (type == "1")
+	if (type == 1)
 	{
 		while (document.getElementById("title-" + length) != null)
 		{
@@ -203,7 +203,7 @@ function createMediaSliderData(type) {
 		_json = _json + ']}';
 	}
 
-	if (type == "2")
+	if (type == 2)
 	{
 		while (document.getElementById("title-" + length) != null)
 		{
