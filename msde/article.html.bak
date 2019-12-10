@@ -9,7 +9,7 @@
 		<title>Media Slider Data Editor</title>
 
 		<link href="./msde.css" rel="stylesheet">
-		<script type="text/javascript" src="msde.js"></script>
+		<script type="text/javascript" src="./msde.js"></script>
 
 		<script id="msde-script-0">
 		//media-slider ver 2.0.2
