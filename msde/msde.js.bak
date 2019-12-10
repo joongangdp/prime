@@ -1,8 +1,8 @@
-function openViewer() {
+function openViewer(type) {
 
 	document.getElementById("msde-viewer-0").style.display = "flex";
 	document.getElementById("msde-viewer-container-0").style.margin = window.scrollY + 30 + "px 0 0 -631px";
-	createMediaSliderData();
+	createMediaSliderData(type);
 }
 
 function closeViewer() {
