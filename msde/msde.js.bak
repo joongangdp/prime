@@ -1,0 +1,31 @@
+function openViewer() {
+
+	document.getElementById("msde-viewer-0").style.display = "flex";
+	document.getElementById("msde-viewer-container-0").style.margin = window.scrollY + 30 + "px 0 0 -631px";
+	createMediaSliderData();
+}
+
+function closeViewer() {
+
+	document.getElementById("msde-viewer-0").style.display = "none";
+}
+
+function convertToHtml(str) {
+
+	str = str.replace(/</g,"&lt;");
+	str = str.replace(/>/g,"&gt;");
+	str = str.replace(/\"/g,"&quot;");
+	str = str.replace(/\'/g,"&#39;");
+	str = str.replace(/\n/g,"<br />");
+
+	return str;
+}
+
+function copyEmbedCode() {
+
+	var source = document.getElementById("msde-source-0");
+
+	source.select();
+	source.setSelectionRange(0, source.value.length)
+	document.execCommand("copy");
+}
