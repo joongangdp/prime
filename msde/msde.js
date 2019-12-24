@@ -96,10 +96,10 @@ function createMediaSliderData(type) {
 		title[length] = getInputValue("title-" + length);
 		summary[length] = getInputValue("summary-" + length);
 		url[length] = getInputValue("url-" + length);
-		thumbnailImage[length] = getInputValue("thumbnailImage-" + length);
+		thumbnailImage[length] = getInputValue("thumbnailImage-" + length).replace("http://","https://");
 		updateDate[length] = getInputValue("updateDate-" + length);
 		author[length] = getInputValue("author-" + length);
-		profileImage[length] = getInputValue("profileImage-" + length);
+		profileImage[length] = getInputValue("profileImage-" + length).replace("http://","https://");
 
 		article[length] = new Object();
 		article[length].title = new Array();
@@ -110,7 +110,7 @@ function createMediaSliderData(type) {
 		{
 			article[length].title[i] = getInputValue("article-" + length + "-title-" + i);
 			article[length].url[i] = getInputValue("article-" + length + "-url-" + i);
-			article[length].thumbnailImage[i] = getInputValue("article-" + length + "-thumbnailImage-" + i);
+			article[length].thumbnailImage[i] = getInputValue("article-" + length + "-thumbnailImage-" + i).replace("http://","https://");
 		}
 
 		sale[length] = new Object();
