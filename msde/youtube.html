@@ -400,14 +400,18 @@
 				if (type == this.ITEM_TYPE_YOUTUBE)
 				{
 					var content = document.createElement("DIV");
-					var youtube = document.createElement("IFRAME");
+
+					var url = document.createElement("A");
+					var youtube = document.createElement("IMG");
+					//var youtube = document.createElement("IFRAME");
 					var text = document.createElement("DIV");
 					var title = document.createElement("DIV");
 					var summary = document.createElement("DIV");
 
 					item.appendChild(content);
 					item.appendChild(text);
-					content.appendChild(youtube);
+					content.appendChild(url);
+					url.appendChild(youtube);
 					text.appendChild(title);
 					text.appendChild(summary);
 
@@ -422,13 +426,17 @@
 						content.style.height = "0";
 						content.style.paddingBottom = "56.25%";
 
+						url.href = "https://www.youtube.com/watch?v=" + data[seq].contentId;
+						url.target = "_blank";
+
 						youtube.style.position = "absolute";
 						youtube.style.width = "100%";
 						youtube.style.height = "100%";
 						youtube.style.border = "0";
-						youtube.src = "https://www.youtube.com/embed/" + data[seq].contentId; // JJaFQd1mX98
-						youtube.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-						youtube.setAttribute("allowfullscreen", "");
+						youtube.src = "https://img.youtube.com/vi/" + data[seq].contentId + "/maxresdefault.jpg"; // JJaFQd1mX98
+						//youtube.src = "https://www.youtube.com/embed/" + data[seq].contentId; // JJaFQd1mX98
+						//youtube.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+						//youtube.setAttribute("allowfullscreen", "");
 
 						text.id = item.id + "-2nd-child";
 						text.style.margin ="5px 0px 0px 0px";
@@ -457,13 +465,17 @@
 						content.style.height = "0";
 						content.style.paddingBottom = "56.25%";
 
+						url.href = "https://www.youtube.com/watch?v=" + data[seq].contentId;
+						url.target = "_blank";
+
 						youtube.style.position = "absolute";
 						youtube.style.width = "100%";
 						youtube.style.height = "100%";
 						youtube.style.border = "0";
-						youtube.src = "https://www.youtube.com/embed/" + data[seq].contentId; // JJaFQd1mX98
-						youtube.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
-						youtube.setAttribute("allowfullscreen", "");
+						youtube.src = "https://img.youtube.com/vi/" + data[seq].contentId + "/maxresdefault.jpg"; // JJaFQd1mX98
+						//youtube.src = "https://www.youtube.com/embed/" + data[seq].contentId; // JJaFQd1mX98
+						//youtube.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
+						//youtube.setAttribute("allowfullscreen", "");
 
 						text.id = item.id + "-2nd-child";
 						text.style.padding ="15px 0px 15px 0px";
